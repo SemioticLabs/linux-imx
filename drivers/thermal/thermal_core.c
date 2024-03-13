@@ -333,9 +333,9 @@ void thermal_zone_device_critical(struct thermal_zone_device *tz)
 	int poweroff_delay_ms = CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS;
 
 	dev_emerg(&tz->device, "%s: critical temperature reached, "
-		  "shutting down\n", tz->type);
+		  "rebooting\n", tz->type);
 
-	hw_protection_shutdown("Temperature too high", poweroff_delay_ms);
+	orderly_reboot();
 }
 EXPORT_SYMBOL(thermal_zone_device_critical);
 

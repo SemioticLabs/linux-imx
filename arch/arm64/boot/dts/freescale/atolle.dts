@@ -1,0 +1,170 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright 2019 NXP
+ * Copyright 2019-2020 Variscite Ltd.
+ */
+
+/dts-v1/;
+
+#include <dt-bindings/usb/pd.h>
+#include "imx8mm-var-som.dtsi"
+
+/ {
+	model = "Variscite VAR-SOM-MX8M-MINI on Atolle AM2.0 board";
+	compatible = "variscite,dart-mx8mm", "fsl,imx8mm";
+
+	chosen {
+		stdout-path = &uart4;
+	};
+
+	reg_usb_otg2_vbus: regulator-usb-otg2-vbus {
+		compatible = "regulator-fixed";
+		regulator-name = "usb_otg2_vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+	};
+
+	extcon_usb1: extcon_usb1 {
+		compatible = "linux,extcon-usb-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_extcon>;
+		id-gpio = <&gpio1 11 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		status = "okay";
+
+		led_red {
+			label = "LED_RED";
+			gpios = <&gpio1 00 GPIO_ACTIVE_LOW>;
+			default-state = "off";
+		};
+
+		led_green {
+			label = "LED_GREEN";
+			gpios = <&gpio2 19 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		led_blue {
+			label = "LED_BLUE";
+			gpios = <&gpio4 27 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+	};
+
+	a53_opp_table: opp-table {
+                opp-600000000 {
+                        opp-hz = /bits/ 64 <600000000>;
+                        opp-microvolt = <850000>;
+                        opp-supported-hw = <0xe>, <0x7>;
+                        clock-latency-ns = <150000>;
+                        opp-suspend;
+                };
+
+                opp-800000000 {
+                        opp-hz = /bits/ 64 <800000000>;
+                        opp-microvolt = <850000>;
+                        opp-supported-hw = <0xe>, <0x7>;
+                        clock-latency-ns = <150000>;
+                        opp-suspend;
+                };
+
+                opp-1000000000 {
+                        opp-hz = /bits/ 64 <1000000000>;
+                        opp-microvolt = <850000>;
+                        opp-supported-hw = <0xe>, <0x7>;
+                        clock-latency-ns = <150000>;
+                        opp-suspend;
+                };
+
+                opp-1400000000 {
+                        opp-hz = /bits/ 64 <1400000000>;
+                        opp-microvolt = <850000>;
+                        opp-supported-hw = <0xe>, <0x7>;
+                        clock-latency-ns = <150000>;
+                        opp-suspend;
+                };
+        };
+
+};
+
+&iomuxc {
+	pinctrl_led: led_pin {
+		/* Definition of the GPIOs connected to the LEDs on the adapter board,
+		 for full overview of the description of the register values see the 
+		 iMX8M Reference Manual. */
+		fsl,pins = <
+			/* Enable the pull resistor (bit 8) and set it to a
+			 pull down (bit 6) */
+			MX8MM_IOMUXC_GPIO1_IO00_GPIO1_IO0		0x100
+			MX8MM_IOMUXC_SD2_RESET_B_GPIO2_IO19		0x100
+			MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x100
+		>;
+	};
+
+	pinctrl_imxrt_reset_n: imxrt_reset {
+		fsl,pins = <
+			/* Enable pull resistor (8) and set tp pull up (6) */
+			MX8MM_IOMUXC_SAI3_TXD_GPIO5_IO1			0x140
+    	>;
+    };
+
+	pinctrl_uart3: uart3grp {
+		fsl,pins = <
+			MX8MM_IOMUXC_UART3_RXD_UART3_DTE_TX		0x140
+			MX8MM_IOMUXC_UART3_TXD_UART3_DTE_RX		0x140
+		>;
+	};
+
+	pinctrl_uart4: uart4grp {
+		fsl,pins = <
+			MX8MM_IOMUXC_UART4_RXD_UART4_DCE_RX		0x140
+			MX8MM_IOMUXC_UART4_TXD_UART4_DCE_TX		0x140
+		>;
+	};
+
+	pinctrl_extcon: extcongrp {
+		fsl,pins = <
+			MX8MM_IOMUXC_GPIO1_IO11_GPIO1_IO11		0x16
+		>;
+	};
+};
+
+/* IMXRT UART */
+&uart3 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart3>;
+	status = "okay";
+	/* Set the UART to Date Terminal Equipment mode */
+	fsl,dte-mode;
+};
+
+/* DEBUG Console */
+&uart4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart4>;
+	status = "okay";
+};
+
+&usbotg1 {
+	dr_mode = "otg";
+	picophy,pre-emp-curr-control = <3>;
+	picophy,dc-vol-level-adjust = <7>;
+	hnp-disable;
+	srp-disable;
+	adp-disable;
+	extcon = <0>, <&extcon_usb1>;
+	status = "okay";
+};
+
+&usbotg2 {
+	dr_mode = "host";
+	vbus-supply = <&reg_usb_otg2_vbus>;
+	picophy,pre-emp-curr-control = <3>;
+	picophy,dc-vol-level-adjust = <7>;
+	disable-over-current;
+	status = "okay";
+};

@@ -15,6 +15,7 @@ obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_DESC) += caamalg_desc.o
 obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_AHASH_API_DESC) += caamhash_desc.o
 obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_KEYBLOB_API_DESC) += caamkeyblob_desc.o
 obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_JR_UIO) += fsl_jr_uio.o
++obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_SM_KEY_BLOB) += key_blob.o
 
 caam-y := ctrl.o
 caam_jr-y := jr.o key_gen.o
@@ -30,6 +31,12 @@ caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_PRNG_API) += caamprng.o
 obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_SM_TEST) += sm_test.o
 obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_SECVIO) += secvio.o
 obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_TK_API_TEST) += caamkeyblob_test.o
+
+obj-$(CONFIG_CRYPTO_DEV_FSL_CAAM_DESC) += caam_desc.o
+caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_UTIL) += caam_util.o
+caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_UTIL_BLACK_KEY) += black_keys.o
+caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_UTIL_BLOB) += blob.o
+caam_jr-$(CONFIG_CRYPTO_DEV_FSL_CAAM_KEY_BLOB) += key_blob.o
 
 caam-$(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI) += qi.o
 ifneq ($(CONFIG_CRYPTO_DEV_FSL_CAAM_CRYPTO_API_QI),)

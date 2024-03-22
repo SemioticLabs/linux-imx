@@ -126,7 +126,9 @@
 					hysteresis = <2000>;
 					type = "passive";
 				};
-		
+				/* At 95C we reach critical temperature point,
+				   to quickly cool down will reboot the device.
+				*/
 				cpu_crit0: trip5 {
 					temperature = <95000>;
 					hysteresis = <2000>;

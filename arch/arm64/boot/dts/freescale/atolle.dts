@@ -89,6 +89,107 @@
                 };
         };
 
+	/delete-node/ thermal-zones;
+
+	thermal-zones {
+		cpu-thermal {
+			polling-delay-passive = <250>;
+			polling-delay = <2000>;
+			thermal-sensors = <&tmu>;
+			trips {
+				cpu_alert0: trip0 {
+					temperature = <79000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+		
+				cpu_alert1: trip1 {
+					temperature = <82000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+		
+				cpu_alert2: trip2 {
+					temperature = <85000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+		
+				cpu_alert3: trip3 {
+					temperature = <88000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+		
+				cpu_alert4: trip4 {
+					temperature = <91000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+				/* At 95C we reach critical temperature point,
+				   to quickly cool down will reboot the device.
+				*/
+				cpu_crit0: trip5 {
+					temperature = <95000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+		
+			cooling-maps {
+			/* We have 7 OPPs of: 600MHz, 800MHz, 1GHz, 1.2GHz, 1.4GHz, 1.6GHz and 1.8GHz.
+			   Minimum cooling state (0) includes all operating points, the maximum cooling
+			   state (6) only includes the lowest operating point (600 MHz).
+			*/
+				map0 {
+					// 79C trip: max OPP is at 1.6GHz (1)
+					trip = <&cpu_alert0>;
+					cooling-device =
+						<&A53_0 THERMAL_NO_LIMIT 1>,
+						<&A53_1 THERMAL_NO_LIMIT 1>,
+						<&A53_2 THERMAL_NO_LIMIT 1>,
+						<&A53_3 THERMAL_NO_LIMIT 1>;
+				};
+		
+				map1 {
+					// 82C trip: max OPP is at 1.2 GHz (3)
+					trip = <&cpu_alert1>;
+					cooling-device =
+						<&A53_0 THERMAL_NO_LIMIT 3>,
+						<&A53_1 THERMAL_NO_LIMIT 3>,
+						<&A53_2 THERMAL_NO_LIMIT 3>,
+						<&A53_3 THERMAL_NO_LIMIT 3>;
+				};
+				map2 {
+					// 85C trip: max OPP is at 1.0GHz (4)
+					trip = <&cpu_alert2>;
+					cooling-device =
+						<&A53_0 THERMAL_NO_LIMIT 4>,
+						<&A53_1 THERMAL_NO_LIMIT 4>,
+						<&A53_2 THERMAL_NO_LIMIT 4>,
+						<&A53_3 THERMAL_NO_LIMIT 4>;
+				};
+				map3 {
+					// 88C trip: max OPP is at 800 MHz (5)
+					trip = <&cpu_alert3>;
+					cooling-device =
+						<&A53_0 THERMAL_NO_LIMIT 5>,
+						<&A53_1 THERMAL_NO_LIMIT 5>,
+						<&A53_2 THERMAL_NO_LIMIT 5>,
+						<&A53_3 THERMAL_NO_LIMIT 5>;
+				};
+				map4 {
+					// 91C trip: max OPP is at 600MHz (6)
+					trip = <&cpu_alert4>;
+					cooling-device =
+						<&A53_0 THERMAL_NO_LIMIT 6>,
+						<&A53_1 THERMAL_NO_LIMIT 6>,
+						<&A53_2 THERMAL_NO_LIMIT 6>,
+						<&A53_3 THERMAL_NO_LIMIT 6>;
+				};
+			};
+		};
+	};
 };
 
 &iomuxc {
